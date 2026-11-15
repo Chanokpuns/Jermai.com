@@ -373,9 +373,7 @@ function Home() {
               <div className="detail-actions">
                 <button
                   className="detail-chat-button"
-                  onClick={() => {
-                    // TODO: เชื่อมไปหน้า Chat
-                  }}
+                  onClick={() => navigate("/chat")}
                 >
                   Chat
                 </button>
@@ -411,7 +409,7 @@ function App() {
         <Route path="/sendclue" element={<SendClue />} />
         <Route path="/myposts" element={<MyPosts />} />
         <Route path="/chat" element={<ChatPage />} />
-        
+
       </Routes>
     </BrowserRouter>
   );
