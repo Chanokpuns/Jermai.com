@@ -1,0 +1,217 @@
+
+/* หน้าหลัก */
+.create-post-page {
+  min-height: 100vh;
+  background-color: #ffffff;
+  font-family: "K2D", sans-serif;
+  padding: 30px 70px;
+  box-sizing: border-box;
+}
+
+/* Header */
+.create-post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.create-post-brand h1 {
+  color:rgb(109, 231, 197);;
+  font-size: 28px;
+  margin: 0;
+}
+
+.create-post-navbar {
+  display: flex;
+  align-items: center;
+}
+
+/* ปุ่มย้อนกลับ */
+.back-button {
+  margin-top: 10px;
+  padding: 5px 12px;
+  background-color: rgb(109, 231, 197);
+  border:none;
+  border-radius: 6px;
+  color: #f5f7f8;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.back-button:hover {
+  background-color: rgb(35, 147, 115);
+  color: white;
+}
+
+/* พื้นที่ฟอร์ม */
+.create-post-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 0;
+}
+
+/* กล่องฟอร์ม */
+.create-post-form {
+  width: 100%;
+  max-width: 700px;
+  padding: 35px 40px;
+  background-color: #ffffff;
+  border-radius: 10px;
+
+  box-shadow: 0 4px 20px rgba(21, 52, 83, 0.15);
+
+  box-sizing: border-box;
+}
+
+/* หัวข้อ */
+.create-post-form h2 {
+  text-align: center;
+  color: rgb(57, 165, 134);
+  font-size: 25px;
+  margin: 0 0 30px;
+}
+
+/* กลุ่ม Input */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 22px;
+}
+
+.form-group label {
+  color: #101112;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 9px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid rgb(35, 147, 115);
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #153453;
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+  box-sizing: border-box;
+  transition: 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: rgb(59, 208, 166);
+  box-shadow: 0 0 0 3px rgba(59, 208, 166, 0.12);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* จัดวางช่องในแถวเดียวกัน */
+.form-row {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+.name-row .item-name {
+  flex: 2;
+}
+
+.name-row .form-group:not(.item-name) {
+  flex: 1;
+}
+
+.bottom-row .form-group {
+  flex: 1;
+}
+
+/* ช่องรูปภาพ */
+.image-group input {
+  padding: 9px;
+  font-size: 12px;
+}
+
+/* ปุ่มด้านล่าง */
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.form-buttons button {
+  padding: 11px 35px;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-button {
+  color: #153453;
+  background-color: #e9edf0;
+}
+
+.cancel-button:hover {
+  background-color: #d8e0e6;
+}
+
+.confirm-button {
+  color: white;
+  background-color: rgb(59, 208, 166);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.confirm-button:hover {
+  background-color: rgb(43, 194, 151);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+  transform: translateY(-1px);
+}
+
+.confirm-button:active {
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .create-post-page {
+    padding: 20px;
+  }
+
+  .create-post-header {
+    gap: 15px;
+    flex-direction: column;
+  }
+
+  .create-post-form {
+    padding: 25px 20px;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .form-group {
+    width: 100%;
+  }
+
+  .create-post-form h2 {
+    font-size: 20px;
+  }
+}

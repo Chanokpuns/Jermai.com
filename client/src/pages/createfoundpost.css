@@ -1,0 +1,215 @@
+
+/* หน้าหลัก */
+.create-found-post-page {
+  min-height: 100vh;
+  background-color: #ffffff;
+  font-family: "K2D", sans-serif;
+  padding: 30px 70px;
+  box-sizing: border-box;
+}
+
+/* Header */
+.create-found-post-page .create-post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.create-found-post-page .create-post-brand h1 {
+  color: rgb(109, 231, 197);
+  font-size: 28px;
+  margin: 0;
+}
+
+.create-found-post-page .create-post-navbar {
+  display: flex;
+  align-items: center;
+}
+
+/* ปุ่มย้อนกลับ */
+.create-found-post-page .back-button {
+  margin-top: 10px;
+  padding: 5px 12px;
+  background-color: rgb(109, 231, 197);
+  border: none;
+  border-radius: 6px;
+  color: #f5f7f8;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.create-found-post-page .back-button:hover {
+  background-color: rgb(35, 147, 115);
+  color: white;
+}
+
+/* พื้นที่ฟอร์ม */
+.create-found-post-page .create-post-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 0;
+}
+
+/* กล่องฟอร์ม */
+.create-found-post-page .create-found-post-form {
+  width: 100%;
+  max-width: 700px;
+  padding: 35px 40px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(21, 52, 83, 0.15);
+  box-sizing: border-box;
+}
+
+/* หัวข้อ */
+.create-found-post-page .create-found-post-form h2 {
+  text-align: center;
+  color: rgb(234, 26, 26);
+  font-size: 25px;
+  margin: 0 0 30px;
+}
+
+/* กลุ่ม Input */
+.create-found-post-page .form-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 22px;
+}
+
+.create-found-post-page .form-group label {
+  color: #101112;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 9px;
+}
+
+.create-found-post-page .form-group input,
+.create-found-post-page .form-group select,
+.create-found-post-page .form-group textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid rgb(35, 147, 115);
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #153453;
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+  box-sizing: border-box;
+  transition: 0.3s;
+}
+
+.create-found-post-page .form-group input:focus,
+.create-found-post-page .form-group select:focus,
+.create-found-post-page .form-group textarea:focus {
+  border-color: rgb(59, 208, 166);
+  box-shadow: 0 0 0 3px rgba(59, 208, 166, 0.12);
+}
+
+.create-found-post-page .form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* จัดวางช่องในแถวเดียวกัน */
+.create-found-post-page .form-row {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+.create-found-post-page .name-row .item-name {
+  flex: 2;
+}
+
+.create-found-post-page .name-row .form-group:not(.item-name) {
+  flex: 1;
+}
+
+.create-found-post-page .bottom-row .form-group {
+  flex: 1;
+}
+
+/* ช่องรูปภาพ */
+.create-found-post-page .image-group input {
+  padding: 9px;
+  font-size: 12px;
+}
+
+/* ปุ่มด้านล่าง */
+.create-found-post-page .form-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.create-found-post-page .form-buttons button {
+  padding: 11px 35px;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.create-found-post-page .cancel-button {
+  color: #153453;
+  background-color: #e9edf0;
+}
+
+.create-found-post-page .cancel-button:hover {
+  background-color: #d8e0e6;
+}
+
+.create-found-post-page .confirm-button {
+  color: white;
+  background-color: rgb(59, 208, 166);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.create-found-post-page .confirm-button:hover {
+  background-color: rgb(43, 194, 151);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+  transform: translateY(-1px);
+}
+
+.create-found-post-page .confirm-button:active {
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .create-found-post-page {
+    padding: 20px;
+  }
+
+  .create-found-post-page .create-post-header {
+    gap: 15px;
+    flex-direction: column;
+  }
+
+  .create-found-post-page .create-found-post-form {
+    padding: 25px 20px;
+  }
+
+  .create-found-post-page .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .create-found-post-page .form-group {
+    width: 100%;
+  }
+
+  .create-found-post-page .create-found-post-form h2 {
+    font-size: 20px;
+  }
+}

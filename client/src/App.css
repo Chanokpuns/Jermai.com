@@ -1,0 +1,558 @@
+.App-homepage {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  margin: 130px 150px 0;
+  padding-bottom: 32px;
+
+  position: relative;
+  isolation: isolate;
+}
+.App-homepage h1 {
+  margin: 0 0 15px;
+  font-size: 70px;
+}
+
+.App-homepage p {
+  max-width: 600px;
+  font-size: 15px;
+  line-height: 1.8;
+  margin: 0;
+}
+
+.home-line {
+  width: 100%;
+  height: 1px;
+  background-color: #5e5b5b;
+  margin-top: 32px;
+}
+
+.logo img {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  object-fit: contain;
+}
+
+
+.App-homepage {
+  position: relative;
+  isolation: isolate;
+}
+
+.home-content,
+.logo {
+  position: relative;
+  z-index: 1;
+}
+
+.button-home {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.button-home button {
+  color: rgb(244, 247, 246);
+  background-color: rgb(59, 208, 166);
+  border: none;
+  border-radius: 10px;
+  padding: 15px 50px;
+  font-size: 15px;
+  cursor: pointer;
+
+  /* เงาปุ่ม */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+
+  /* ทำให้เอฟเฟกต์นุ่มนวล */
+  transition: all 0.3s ease;
+}
+
+/* เอฟเฟกต์เมื่อเอาเมาส์ไปชี้ */
+.button-home button:hover {
+  background-color: rgb(43, 194, 151);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+}
+
+/* เอฟเฟกต์ตอนกดปุ่ม */
+.button-home button:active {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.about {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 180px 10% 80px;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+
+.right-side{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.hook1 {
+  color: rgb(247, 249, 249);
+  background-color: rgb(36, 161, 125);
+  width: 80%;
+  border-radius: 25px;
+  font-size: 15px;
+  padding: 20px 50px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* announcement ////////////////////////////////////////////*/
+.announcement {
+  min-height: 100vh;
+  padding: 60px 10%;
+  box-sizing: border-box;
+}
+
+.announcement-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.announcement-search input {
+  flex: 1;
+  min-width: 0;
+  padding: 14px 18px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 15px;
+  outline: none;
+}
+
+.search-button {
+  padding: 14px 24px;
+  border: none;
+  border-radius: 10px;
+  background-color: rgb(43, 194, 151);
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+
+.announcement-filter,
+.status-filter {
+  padding: 12px 38px 12px 16px;
+  border: 1px solid rgba(36, 161, 125, 0.25);
+  border-radius: 12px;
+  background-color: rgb(43, 194, 151);
+  color: white;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  max-width: 200px;
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+/* หน้าตารายการตัวเลือก */
+.announcement-filter option,
+.status-filter option {
+  background-color: white;
+  color: #333;
+  padding: 10px;
+}
+
+/* //////ปุ่ม 2 ปุ่ม */
+.announcement-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 30px 0;
+}
+
+.announcement-tabs button {
+  padding: 12px 25px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  cursor: pointer;
+  background: white;
+  color: rgb(43, 194, 151);
+  transition: 0.3s;
+}
+
+.announcement-tabs button.active {
+  background:rgb(43, 194, 151);
+  color: rgb(249, 251, 250);
+}
+
+/* แสดงประกาศที่เลือก */
+/* กล่องประกาศตามหา */
+.lost-items-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.lost-card {
+  background: white;
+  border-radius: 15px;
+  padding: 18px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.card-type {
+  font-weight: bold;
+  color: #e05252;
+}
+
+.card-status {
+  background: #ffe4e4;
+  color: #d94b4b;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+
+.card-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.card-info {
+  margin-top: 15px;
+}
+
+.card-info p {
+  margin: 7px 0;
+}
+
+.card-info h3 {
+  margin: 8px 0;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
+.card-footer button,
+.found-card-footer button {
+  background: rgb(43, 194, 151);
+  color: white;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* กล่องประกาศพบของ */
+.found-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.found-card {
+  display: flex;
+  align-items: stretch;
+  gap: 25px;
+  background: white;
+  padding: 15px;
+  border-radius: 15px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+}
+
+
+.found-card-image {
+  width: 220px;
+  height: 170px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.found-card-info {
+  flex: 1;
+}
+
+.found-card-info p {
+  margin: 8px 0;
+}
+
+.found-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
+.announcement-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.announcement-heading h2 {
+  margin: 0;
+}
+
+.announcement-heading span {
+  color: #222;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* หน้าต่างรายละเอียด */
+.detail-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(13, 15, 14, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.detail-modal {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 450px;
+  position: relative;
+}
+
+.detail-modal img {
+  width: 100%;
+  max-height: 250px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.close-detail {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  cursor: pointer;
+}
+
+
+/* //////////////////ปุ่มสร้างประกาศ///////////////////// */
+.create-post-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 20px;
+
+  color: rgb(244, 247, 246);
+  background-color: rgb(59, 208, 166);
+  border: none;
+  border-radius: 10px;
+  padding: 15px 50px;
+  font-size: 15px;
+  text-decoration: none;
+  cursor: pointer;
+
+  /* เงาปุ่ม */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+
+  /* ทำให้เอฟเฟกต์นุ่มนวล */
+  transition: all 0.3s ease;
+}
+
+/* เอฟเฟกต์เมื่อเอาเมาส์ไปชี้ */
+.create-post-link:hover {
+  background-color: rgb(43, 194, 151);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+}
+
+/* เอฟเฟกต์ตอนกด */
+.create-post-link:active {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+
+/* พื้นหลังด้านหลัง Modal */
+.detail-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* กล่องรายละเอียด */
+.detail-modal {
+  position: relative;
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background-color: white;
+  border-radius: 15px;
+  padding: 40px 40px;
+  box-sizing: border-box;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+  font-family: "K2D", sans-serif;
+}
+
+/* ปุ่มปิด */
+.close-detail {
+  position: absolute;
+  top: 40px;
+  right: 18px;
+  border: none;
+  background: transparent;
+  color: #153453;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* หัวข้อ */
+.detail-modal h2 {
+  text-align: center;
+  color: #36cb9a;
+  font-size: 22px;
+  margin: 0 0 20px;
+}
+
+/* รูปภาพ */
+.detail-image {
+  width: 50%;
+  height: 150px;
+  margin: 0 auto;
+  background-color: #f3f5f6;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.detail-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ชื่อสิ่งของ */
+.detail-item-name {
+  color: #0fb28c;
+  font-size: 25px;
+  margin: 20px 0;
+}
+
+/* ข้อมูลรายละเอียด */
+.detail-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-info-item {
+  border-bottom: 1px solid #e8eeee;
+  padding-bottom: 12px;
+}
+
+.detail-info-item span {
+  display: block;
+  color: #1aceb0;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.detail-info-item p {
+  color: #141414;
+  font-size: 14px;
+  margin: 0;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+/* ปุ่มด้านล่าง */
+.detail-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  margin-top: 25px;
+}
+
+.detail-actions button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* ปุ่ม Chat */
+.detail-chat-button {
+  background-color: rgb(109, 231, 197);
+  color: rgb(29, 28, 28);
+}
+
+.detail-chat-button:hover {
+  background-color: rgb(75, 205, 168);
+}
+
+/* ปุ่มส่งเบาะแส */
+.detail-clue-button {
+  background-color: rgb(109, 231, 197);
+  color: #153453;
+}
+
+.detail-clue-button:hover {
+  background-color: rgb(75, 205, 168);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .detail-modal {
+    padding: 25px 20px;
+  }
+
+  .detail-image {
+    height: 180px;
+  }
+
+  .detail-actions {
+    flex-direction: column;
+  }
+}
