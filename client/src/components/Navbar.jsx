@@ -11,7 +11,6 @@ function Navbar() {
         <div className="top-bar">
             <a href="#about">About</a>
             <Link to="/login">Login</Link>
-            <Link to="/chat">Chat</Link>
         </div>
     </nav>
   );
