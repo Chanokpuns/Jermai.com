@@ -1,7 +1,15 @@
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { clearAuth } from "../services/api";
 
 function Navbaruser() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    clearAuth();
+    navigate("/", { state: { loggedOutAt: Date.now() } });
+  };
+
   return (
     <>
       <style>{`
@@ -36,7 +44,17 @@ function Navbaruser() {
           cursor: pointer;
         }
 
-        .top-bar-user a:hover {
+        .top-bar-user button {
+          background: transparent;
+          border: none;
+          padding: 0;
+          color: rgb(86, 239, 219);
+          font: inherit;
+          cursor: pointer;
+        }
+
+        .top-bar-user a:hover,
+        .top-bar-user button:hover {
           color: rgb(116, 252, 197);
         }
       `}</style>
@@ -44,7 +62,7 @@ function Navbaruser() {
       <nav className="navbar-user">
         <div className="top-bar-user">
           <Link to="/myposts">ประกาศของฉัน</Link>
-          <a href="#Login">Logout</a>
+          <button type="button" onClick={handleLogout}>Logout</button>
           <Link to="/chat">Chat</Link>
         </div>
       </nav>

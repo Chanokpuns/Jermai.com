@@ -1,8 +1,39 @@
 
 import GlowCircles from "../components/GlowCircles";
 import logo from "../assets/logo.jpg";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { api, saveAuth } from "../services/api";
 
 function Register() {
+  const navigate = useNavigate();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      const f = new FormData(e.target);
+      const data = await api("/auth/register", {
+        method: "POST",
+        body: {
+          name: f.get("name"),
+          phone: f.get("phone"),
+          email: f.get("email"),
+          password: f.get("password"),
+        },
+      });
+      saveAuth(data);
+      navigate("/");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="login-page">
       <style>{`
@@ -167,17 +198,19 @@ function Register() {
           <h1>Welcome</h1>
           <p>to เจอมั้ย.com enjoy your hell</p>
 
-          <form onSubmit={(e) => e.preventDefault()}>
+          <form onSubmit={handleRegister}>
             <input
               className="register-input"
               type="text"
+              name="name"
               placeholder="Full Name"
               required
             />
             
             <input
               className="register-input"
-              type="phone"
+              type="tel"
+              name="phone"
               placeholder="Phone Number"
               required
             />
@@ -185,6 +218,7 @@ function Register() {
               <input
               className="register-input"
               type="email"
+              name="email"
               placeholder="Email"
               required
             />
@@ -192,12 +226,15 @@ function Register() {
             <input
               className="register-input"
               type="password"
+              name="password"
+              minLength={6}
               placeholder="Password"
               required
             />
 
-            <button type="submit" className="register-button">
-              Sign Up
+            {error && <p style={{ color: "#d33", fontSize: 14 }}>{error}</p>}
+            <button type="submit" className="register-button" disabled={loading}>
+              {loading ? "กำลังสมัคร..." : "Sign Up"}
             </button>
           </form>
 

@@ -1,8 +1,35 @@
 
+import { useNavigate } from "react-router-dom";
 import GlowCircles from "../components/GlowCircles";
 import logo from "../assets/logo.jpg";
+import { useState } from "react";
+import { api, saveAuth } from "../services/api";
 
 function Login() {
+  const navigate = useNavigate();
+
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      const form = new FormData(e.target);
+      const data = await api("/auth/login", {
+        method: "POST",
+        body: { email: form.get("email"), password: form.get("password") },
+      });
+      saveAuth(data);
+      navigate("/");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="login-page">
       <style>{`
@@ -181,10 +208,11 @@ function Login() {
           <h1>Welcome</h1>
           <p>Sign up to find your items</p>
 
-          <form onSubmit={(e) => e.preventDefault()}>
+          <form onSubmit={handleLogin}>
             <input
               className="login-input"
               type="email"
+              name="email"
               placeholder="Email"
               required
             />
@@ -192,6 +220,7 @@ function Login() {
             <input
               className="login-input"
               type="password"
+              name="password"
               placeholder="Password"
               required
             />
@@ -200,8 +229,10 @@ function Login() {
               Forgot password?
             </a>
 
-            <button type="submit" className="login-button">
-              Sign In
+            {error && <p style={{ color: "#d33", fontSize: 14, margin: "0 0 12px" }}>{error}</p>}
+
+            <button type="submit" className="login-button" disabled={loading}>
+              {loading ? "กำลังเข้าสู่ระบบ..." : "Sign In"}
             </button>
           </form>
 

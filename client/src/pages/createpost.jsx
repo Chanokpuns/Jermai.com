@@ -1,16 +1,28 @@
 
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { api } from "../services/api";
 import Navbaruser from "../components/Navbaruser";
 import "./createpost.css";
 
 function CreatePost() {
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    // ตอนนี้ยังไม่ได้เชื่อมต่อ Backend
-    // ไว้เพิ่มการบันทึกประกาศในขั้นตอนถัดไป
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      await api("/posts", { method: "POST", body: new FormData(e.target) });
+      navigate("/myposts");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -48,6 +60,7 @@ function CreatePost() {
               <label>ชื่อสิ่งของ</label>
               <input
                 type="text"
+                name="name"
                 placeholder="กรอกชื่อสิ่งของ"
                 required
               />
@@ -55,7 +68,7 @@ function CreatePost() {
 
             <div className="form-group">
               <label>ชนิด</label>
-              <select required defaultValue="">
+              <select name="category" required defaultValue="">
                 <option value="" disabled>เลือกชนิด</option>
                 <option value="electronics">อุปกรณ์อิเล็กทรอนิกส์</option>
                 <option value="document">เอกสาร</option>
@@ -66,7 +79,7 @@ function CreatePost() {
 
             <div className="form-group">
               <label>สถานะ</label>
-              <select required defaultValue="">
+              <select name="type" required defaultValue="">
                 <option value="" disabled>เลือกสถานะ</option>
                 <option value="lost">สูญหาย</option>
                 <option value="found">พบเจอ</option>
@@ -79,6 +92,7 @@ function CreatePost() {
             <label>สถานที่</label>
             <input
               type="text"
+              name="location"
               placeholder="กรอกสถานที่ที่ทำหายหรือพบเจอ"
               required
             />
@@ -88,6 +102,7 @@ function CreatePost() {
           <div className="form-group">
             <label>รายละเอียด</label>
             <textarea
+              name="description"
               placeholder="กรอกรายละเอียดเพิ่มเติมเกี่ยวกับสิ่งของ..."
               rows="5"
             />
@@ -97,17 +112,20 @@ function CreatePost() {
           <div className="form-row bottom-row">
             <div className="form-group">
               <label>วันที่</label>
-              <input type="date" required />
+              <input type="date" name="date" required />
             </div>
 
             <div className="form-group image-group">
               <label>รูปภาพ</label>
               <input
                 type="file"
+                name="image"
                 accept="image/*"
               />
             </div>
           </div>
+
+          {error && <p style={{ color: "#d33" }}>{error}</p>}
 
           {/* Buttons */}
           <div className="form-buttons">
@@ -119,8 +137,8 @@ function CreatePost() {
               ยกเลิก
             </button>
 
-            <button type="submit" className="confirm-button">
-              ยืนยัน
+            <button type="submit" className="confirm-button" disabled={loading}>
+              {loading ? "กำลังบันทึก..." : "ยืนยัน"}
             </button>
           </div>
 

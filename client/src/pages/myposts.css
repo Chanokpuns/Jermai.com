@@ -59,6 +59,28 @@
   font-size: 13px;
 }
 
+.confirm-button {
+  margin-top: 10px;
+  padding: 5px 12px;
+  background-color: rgb(109, 231, 197);
+  border:none;
+  border-radius: 6px;
+  color: #f5f7f8;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.cancel-button{
+   margin-top: 10px;
+  padding: 5px 12px;
+  border:none;
+  border-radius: 6px;
+  color: #f5f7f8;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
 /* ส่วนเบาะแส */
 .my-post-clues {
   border-top: 1px solid #68c88e;

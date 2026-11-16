@@ -1,5 +1,6 @@
-
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { api, imageUrl } from "../services/api";
 import Navbaruser from "../components/Navbaruser";
 import "./createfoundpost.css";
 import "./myposts.css";
@@ -7,47 +8,59 @@ import "./myposts.css";
 function MyPosts() {
   const navigate = useNavigate();
 
-  // ข้อมูลประกาศตัวอย่าง
-  const myPosts = [
-    {
-      id: 2310,
-      name: "กระเป๋าสตางค์",
-      location: "ใต้ตึก IT",
-      status: "กำลังตามหา",
-      image: "/src/assets/it.jpg",
-      date: "2026-11-15",
-      clues: [
-        {
-          id: 1,
-          location: "โรงอาหาร",
-          description: "เห็นคนเก็บกระเป๋าสีดำได้บริเวณโต๊ะด้านหน้า",
-          date: "2026-11-16",
-        },
-        {
-          id: 2,
-          location: "หน้าห้องสมุด",
-          description: "อาจจะเห็นกระเป๋าที่มีลักษณะคล้ายกันวางอยู่",
-          date: "2026-11-16",
-        },
-      ],
-    },
-    {
-      id: 2311,
-      name: "โทรศัพท์",
-      location: "โรงอาหาร",
-      status: "กำลังตามหา",
-      image: "/src/assets/it.jpg",
-      date: "2026-11-14",
-      clues: [
-        {
-          id: 3,
-          location: "อาคารเรียนรวม",
-          description: "พบโทรศัพท์ที่มีเคสสีดำอยู่บริเวณชั้น 2",
-          date: "2026-11-16",
-        },
-      ],
-    },
-  ];
+  const [myPosts, setMyPosts] = useState([]);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const posts = await api("/posts/mine");
+        const withClues = await Promise.all(
+          posts.map(async (p) => ({
+            ...p,
+            clues: await api(`/posts/${p.id}/clues`),
+          }))
+        );
+        setMyPosts(withClues);
+      } catch (err) {
+        setError(err.message);
+      }
+    })();
+  }, []);
+
+  const toggleStatus = async (post) => {
+    const next = post.status === "closed" ? "open" : "closed";
+    setError("");
+    try {
+      await api(`/posts/${post.id}/status`, {
+        method: "PATCH",
+        body: { status: next },
+      });
+      setMyPosts((prev) =>
+        prev.map((p) => (p.id === post.id ? { ...p, status: next } : p))
+      );
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const deletePost = async (post) => {
+    if (!window.confirm(`ลบประกาศ "${post.name}" ใช่หรือไม่?`)) return;
+    setError("");
+    try {
+      await api(`/posts/${post.id}`, { method: "DELETE" });
+      setMyPosts((prev) => prev.filter((p) => p.id !== post.id));
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const statusLabel = (p) =>
+    p.status === "closed"
+      ? "เจอแล้ว"
+      : p.type === "lost"
+      ? "กำลังตามหา"
+      : "กำลังหาเจ้าของ";
 
   return (
     <div className="create-found-post-page my-post-page">
@@ -72,6 +85,8 @@ function MyPosts() {
       <main className="my-post-main">
 
         <h2 className="my-post-title">ประกาศของฉัน</h2>
+        {error && <p style={{ color: "#d33" }}>{error}</p>}
+        {!error && myPosts.length === 0 && <p>ยังไม่มีประกาศ</p>}
 
         {/* รายการประกาศของฉัน */}
         <section className="my-post-section">
@@ -82,7 +97,7 @@ function MyPosts() {
               <div className="my-post-item">
 
                 <img
-                  src={post.image}
+                  src={imageUrl(post.image)}
                   alt={post.name}
                   className="my-post-image"
                 />
@@ -90,13 +105,32 @@ function MyPosts() {
                 <div className="my-post-info">
 
                   <span className="my-post-status">
-                    {post.status}
+                    {statusLabel(post)}
                   </span>
 
                   <p>ID: {post.id}</p>
                   <h4>{post.name}</h4>
                   <p>สถานที่: {post.location}</p>
                   <p>วันที่ประกาศ: {post.date}</p>
+
+                  <div>
+                    <button
+                      type="button"
+                      className="confirm-button"
+                      onClick={() => toggleStatus(post)}
+                    >
+                      {post.status === "closed"
+                        ? "เปิดประกาศอีกครั้ง"
+                        : "พบแล้ว / ปิดประกาศ"}
+                    </button>
+                    <button
+                      type="button"
+                      className="cancel-button"
+                      onClick={() => deletePost(post)}
+                    >
+                      ลบประกาศ
+                    </button>
+                  </div>
 
                 </div>
               </div>

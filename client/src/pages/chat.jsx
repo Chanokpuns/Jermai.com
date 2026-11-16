@@ -1,82 +1,81 @@
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import Navbaruser from "../components/Navbaruser";
+import { api, getUser } from "../services/api";
 import "./chat.css";
 
 function ChatPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const me = getUser();
 
-  // ข้อมูลผู้ติดต่อและข้อความตัวอย่าง
-  const [contacts, setContacts] = useState([
-    {
-      id: 1,
-      name: "John",
-      messages: [
-        { id: 1, text: "สวัสดีค่ะ", sender: "other", time: "15:52" },
-        { id: 2, text: "สวัสดีค่ะ เจอของที่นี่", sender: "me", time: "15:53" },
-      ],
-    },
-    {
-      id: 2,
-      name: "Tangmo",
-      messages: [
-        { id: 1, text: "สอบถามเรื่องกระเป๋าที่ประกาศไว้ค่ะ", sender: "other", time: "16:10" },
-      ],
-    },
-    {
-      id: 3,
-      name: "John",
-      messages: [
-        { id: 1, text: "ยังตามหากุญแจอยู่ไหมครับ", sender: "other", time: "17:20" },
-      ],
-    },
-    {
-      id: 4,
-      name: "Tangmo",
-      messages: [
-        { id: 1, text: "ขอบคุณสำหรับข้อมูลนะคะ", sender: "other", time: "18:00" },
-      ],
-    },
-  ]);
-
-  const [selectedContact, setSelectedContact] = useState(contacts[0]);
+  const [contacts, setContacts] = useState([]);
+  const [selectedId, setSelectedId] = useState(location.state?.conversationId ?? null);
+  const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const listEnd = useRef(null);
 
-  // ส่งข้อความตัวอย่าง
-  const handleSend = (e) => {
+  const loadContacts = useCallback(async () => {
+    try {
+      const data = await api("/chat/conversations");
+      setContacts(data);
+      setSelectedId((cur) => cur ?? data[0]?.id ?? null);
+    } catch (err) {
+      setError(err.message);
+    }
+  }, []);
+
+  const loadMessages = useCallback(async () => {
+    if (!selectedId) return;
+    try {
+      setMessages(await api(`/chat/conversations/${selectedId}/messages`));
+    } catch (err) {
+      setError(err.message);
+    }
+  }, [selectedId]);
+
+  useEffect(() => {
+    loadContacts();
+    const t = setInterval(loadContacts, 4000);
+    return () => clearInterval(t);
+  }, [loadContacts]);
+
+  useEffect(() => {
+    loadMessages();
+    const t = setInterval(loadMessages, 4000);
+    return () => clearInterval(t);
+  }, [loadMessages]);
+
+  useEffect(() => {
+    listEnd.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages.length]);
+
+  const selectedContact = contacts.find((c) => c.id === selectedId);
+
+  const handleSend = async (e) => {
     e.preventDefault();
-
-    if (!message.trim()) return;
-
-    const newMessage = {
-      id: Date.now(),
-      text: message,
-      sender: "me",
-      time: new Date().toLocaleTimeString("th-TH", {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    };
-
-    setContacts((prev) =>
-      prev.map((contact) =>
-        contact.id === selectedContact.id
-          ? {
-              ...contact,
-              messages: [...contact.messages, newMessage],
-            }
-          : contact
-      )
-    );
-
-    setSelectedContact((prev) => ({
-      ...prev,
-      messages: [...prev.messages, newMessage],
-    }));
-
+    const text = message.trim();
+    if (!text || !selectedId) return;
     setMessage("");
+    try {
+      await api(`/chat/conversations/${selectedId}/messages`, {
+        method: "POST",
+        body: { text },
+      });
+      loadMessages();
+      loadContacts();
+    } catch (err) {
+      setError(err.message);
+    }
   };
+
+  const timeOf = (iso) =>
+    new Date(String(iso).replace(" ", "T")).toLocaleTimeString("th-TH", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
 
   return (
     <div className="chat-page">
@@ -109,23 +108,20 @@ function ChatPage() {
           </div>
 
           <div className="contact-list">
+            {contacts.length === 0 && <p style={{ padding: 16 }}>ยังไม่มีการสนทนา</p>}
             {contacts.map((contact) => (
               <button
                 key={contact.id}
-                className={`contact-item ${
-                  selectedContact.id === contact.id ? "selected" : ""
-                }`}
-                onClick={() => setSelectedContact(contact)}
+                className={`contact-item ${selectedId === contact.id ? "selected" : ""}`}
+                onClick={() => setSelectedId(contact.id)}
               >
-                <div className="chat-avatar">
-                  {contact.name.charAt(0)}
-                </div>
-
+                <div className="chat-avatar">{contact.otherName.charAt(0)}</div>
                 <div className="contact-info">
-                  <h3>{contact.name}</h3>
-                  <p>
-                    {contact.messages[contact.messages.length - 1]?.text}
-                  </p>
+                  <h3>
+                    {contact.otherName}
+                    {contact.postName ? ` · ${contact.postName}` : ""}
+                  </h3>
+                  <p>{contact.lastMessage || "เริ่มการสนทนา"}</p>
                 </div>
               </button>
             ))}
@@ -138,25 +134,25 @@ function ChatPage() {
 
           <div className="conversation-header">
             <div className="chat-avatar">
-              {selectedContact.name.charAt(0)}
+              {selectedContact ? selectedContact.otherName.charAt(0) : "?"}
             </div>
-            <h3>{selectedContact.name}</h3>
+            <h3>{selectedContact ? selectedContact.otherName : "เลือกการสนทนา"}</h3>
           </div>
 
           <div className="message-list">
-            {selectedContact.messages.map((msg) => (
+            {error && <p style={{ color: "#d33", padding: 8 }}>{error}</p>}
+            {messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`message-row ${
-                  msg.sender === "me" ? "my-message" : "other-message"
-                }`}
+                className={`message-row ${msg.senderId === me?.id ? "my-message" : "other-message"}`}
               >
                 <div className="message-bubble">
                   <p>{msg.text}</p>
-                  <span>{msg.time}</span>
+                  <span>{timeOf(msg.createdAt)}</span>
                 </div>
               </div>
             ))}
+            <div ref={listEnd} />
           </div>
 
           {/* ช่องพิมพ์ข้อความ */}

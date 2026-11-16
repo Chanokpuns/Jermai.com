@@ -2,8 +2,8 @@ import './App.css'
 import Navbar from "./components/Navbar";
 import logo from "./assets/logo.jpg";
 import GlowCircles from "./components/GlowCircles";
-import { useState } from "react";
-// import Navbaruser from "./components/Navbaruser";
+import { useState, useEffect } from "react";
+import Navbaruser from "./components/Navbaruser";
 import Login from "./pages/login";
 import Register from "./pages/register";
 import ForgotPassword from "./pages/forgotpassword";
@@ -12,87 +12,76 @@ import CreateFoundPost from "./pages/createfoundpost";
 import SendClue from "./pages/sendclue";
 import MyPosts from "./pages/myposts";
 import ChatPage from "./pages/chat";
-import { BrowserRouter, Routes, Route, useNavigate, Link } from "react-router-dom";
+import { api, imageUrl, isLoggedIn as hasToken, getUser } from "./services/api";
+import { BrowserRouter, Routes, Route, useNavigate, useLocation, Link, Navigate } from "react-router-dom";
 
 
 function Home() {
-  const lostItems = [
-    {
-      id: 2310,
-      name: "กระเป๋าสตางค์",
-      location: "ใต้ตึก",
-      status: "กำลังตามหา",
-      image: "/src/assets/it.jpg",
-      type: "ของใช้",
-      description: "กระเป๋าสตางค์สีดำ ภายในมีบัตรนักศึกษา",
-      date: "2026-11-15"
-    },
-    {
-      id: 2311,
-      name: "โทรศัพท์",
-      location: "โรงอาหาร",
-      status: "กำลังตามหา",
-      image: "/src/assets/it.jpg",
-      type: "ของใช้",
-      description: "กระเป๋าสตางค์สีดำ ภายในมีบัตรนักศึกษา",
-      date: "2026-11-15"
-    },
-    {
-      id: 2312,
-      name: "กระเป๋าสะพาย",
-      location: "ห้องสมุด",
-      status: "กำลังตามหา",
-      image: "/src/assets/it.jpg",
-      type: "ของใช้",
-      description: "กระเป๋าสตางค์สีดำ ภายในมีบัตรนักศึกษา",
-      date: "2026-11-15"
-    },
-    {
-      id: 2313,
-      name: "กุญแจรถ",
-      location: "หน้าคณะ",
-      status: "กำลังตามหา",
-      image: "/src/assets/it.jpg",
-      type: "ของใช้",
-      description: "กระเป๋าสตางค์สีดำ ภายในมีบัตรนักศึกษา",
-      date: "2026-11-15"
-    },
-    {
-      id: 2314,
-      name: "กระเป๋าสะพาย",
-      location: "ห้องสมุด",
-      status: "กำลังตามหา",
-      image: "/src/assets/it.jpg",
-      type: "ของใช้",
-      description: "กระเป๋าสตางค์สีดำ ภายในมีบัตรนักศึกษา",
-      date: "2026-11-15"
-    },
-  ];
-
-  const foundItems = [
-    {
-      id: 1210,
-      name: "กระเป๋า",
-      location: "ใต้ตึก",
-      image: "/src/assets/it.jpg",
-      type: "ของใช้",
-      description: "กระเป๋าสตางค์สีดำ ภายในมีบัตรนักศึกษา",
-      date: "2026-11-15"
-    },
-    {
-      id: 1211,
-      name: "โทรศัพท์",
-      location: "โรงอาหาร",
-      image: "/src/assets/it.jpg",
-      type: "ของใช้",
-      description: "กระเป๋าสตางค์สีดำ ภายในมีบัตรนักศึกษา",
-      date: "2026-11-15"
-    },
-  ];
-
   const navigate = useNavigate();
+  useLocation();
+
+  const isLoggedIn = hasToken();
+  const currentUser = getUser();
+
   const [activeTab, setActiveTab] = useState("lost");
   const [selectedItem, setSelectedItem] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [loadError, setLoadError] = useState("");
+  const [search, setSearch] = useState("");
+  const [appliedSearch, setAppliedSearch] = useState("");
+  const [category, setCategory] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (appliedSearch) params.set("q", appliedSearch);
+    if (category !== "all") params.set("category", category);
+    if (statusFilter !== "all") params.set("status", statusFilter);
+    api(`/posts?${params}`)
+      .then((data) => {
+        setPosts(data);
+        setLoadError("");
+      })
+      .catch((err) => setLoadError(err.message));
+  }, [appliedSearch, category, statusFilter]);
+
+  const lostItems = posts.filter((p) => p.type === "lost");
+  const foundItems = posts.filter((p) => p.type === "found");
+
+  const statusLabel = (p) =>
+    p.status === "closed"
+      ? "เจอแล้ว"
+      : p.type === "lost"
+      ? "กำลังตามหา"
+      : "กำลังหาเจ้าของ";
+
+  const categoryLabels = {
+    electronics: "อุปกรณ์อิเล็กทรอนิกส์",
+    document: "เอกสาร",
+    accessory: "เครื่องประดับ / ของใช้",
+    other: "อื่น ๆ",
+  };
+
+  const openChat = async () => {
+    if (!isLoggedIn) return navigate("/login");
+    try {
+      const { id } = await api("/chat/conversations", {
+        method: "POST",
+        body: { postId: selectedItem.id },
+      });
+      navigate("/chat", { state: { conversationId: id } });
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const openSendClue = () => {
+    if (!isLoggedIn) return navigate("/login");
+    navigate("/sendclue", { state: { post: selectedItem } });
+  };
+
+  const isOwnPost = (p) => !!currentUser && p.ownerId === currentUser.id;
+
   const scrollToSection = (id) => {
     document.getElementById(id)?.scrollIntoView({
       behavior: "smooth",
@@ -103,7 +92,18 @@ function Home() {
   return (
     <>
       <GlowCircles />
-      <Navbar />
+      {isLoggedIn ? (
+        <div className="navbar">
+          <div className="green-logo">
+            <h1>เจอมั้ย.com</h1>
+          </div>
+          <div>
+            <Navbaruser />
+          </div>
+        </div>
+      ) : (
+        <Navbar />
+      )}
       <section className="App-homepage">
 
         <div className="home-content">
@@ -159,22 +159,36 @@ function Home() {
           <input
             type="text"
             placeholder="ค้นหาสิ่งของที่หายหรือพบ..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && setAppliedSearch(search.trim())}
           />
 
-          <button className="search-button">
+          <button className="search-button" onClick={() => setAppliedSearch(search.trim())}>
             <span>⌕</span> ค้นหา
           </button>
 
-          <select className="announcement-filter" defaultValue="all">
+          <select
+            className="announcement-filter"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
             <option value="all">ประเภท</option>
-            <option value="bag">กระเป๋า</option>
+            <option value="electronics">อุปกรณ์อิเล็กทรอนิกส์</option>
+            <option value="document">เอกสาร</option>
+            <option value="accessory">เครื่องประดับ / ของใช้</option>
+            <option value="other">อื่น ๆ</option>
           </select>
 
 
-          <select className="status-filter" defaultValue="all">
+          <select
+            className="status-filter"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
             <option value="all">สถานะ</option>
-            <option value="bag">ยังไม่พบ</option>
-            <option value="bag">พบแล้ว</option>
+            <option value="open">ยังไม่พบ</option>
+            <option value="closed">พบแล้ว</option>
           </select>
 
         </div>
@@ -205,7 +219,7 @@ function Home() {
                 <h2>ประกาศตามหาของที่หาย</h2>
                 <span>{lostItems.length} รายการ</span>
               </div>
-              {/* รายการประกาศตามหาของ */}
+              {loadError && <p style={{ color: "#d33" }}>{loadError}</p>}
             </div>
           ) : (
             <div className="found-items">
@@ -232,12 +246,12 @@ function Home() {
                   <div className="card-header">
                     <span className="card-type">LOST</span>
                     <span className="card-status">
-                      {item.status}
+                      {statusLabel(item)}
                     </span>
                   </div>
 
                   <img
-                    src={item.image}
+                    src={imageUrl(item.image)}
                     alt={item.name}
                     className="card-image"
                   />
@@ -268,7 +282,7 @@ function Home() {
                 <div className="found-card" key={item.id}>
 
                   <img
-                    src={item.image}
+                    src={imageUrl(item.image)}
                     alt={item.name}
                     className="found-card-image"
                   />
@@ -319,7 +333,7 @@ function Home() {
               {/* รูปภาพ */}
               <div className="detail-image">
                 <img
-                  src={selectedItem.image}
+                  src={imageUrl(selectedItem.image)}
                   alt={selectedItem.name}
                 />
               </div>
@@ -349,12 +363,12 @@ function Home() {
 
                 <div className="detail-info-item">
                   <span>ประเภท</span>
-                  <p>{selectedItem.type || selectedItem.category || "ไม่ได้ระบุ"}</p>
+                  <p>{categoryLabels[selectedItem.category] || "ไม่ได้ระบุ"}</p>
                 </div>
 
                 <div className="detail-info-item">
                   <span>สถานะ</span>
-                  <p>{selectedItem.status || "ไม่ได้ระบุ"}</p>
+                  <p>{statusLabel(selectedItem)}</p>
                 </div>
 
                 <div className="detail-info-item">
@@ -371,19 +385,19 @@ function Home() {
 
               {/* ปุ่มด้านล่าง */}
               <div className="detail-actions">
-                <button
-                  className="detail-chat-button"
-                  onClick={() => navigate("/chat")}
-                >
-                  Chat
-                </button>
+                {isOwnPost(selectedItem) ? (
+                  <p>นี่คือประกาศของคุณ</p>
+                ) : (
+                  <>
+                    <button className="detail-chat-button" onClick={openChat}>
+                      Chat
+                    </button>
 
-                <button
-                  className="detail-clue-button"
-                  onClick={() => navigate("/sendclue")}
-                >
-                  ส่งเบาะแส
-                </button>
+                    <button className="detail-clue-button" onClick={openSendClue}>
+                      ส่งเบาะแส
+                    </button>
+                  </>
+                )}
               </div>
 
             </div>
@@ -396,6 +410,10 @@ function Home() {
   );
 }
 
+function RequireAuth({ children }) {
+  return hasToken() ? children : <Navigate to="/login" replace />;
+}
+
 function App() {
   return (
     <BrowserRouter>
@@ -404,11 +422,11 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgotpassword" element={<ForgotPassword />} />
-        <Route path="/createpost" element={<CreatePost />} />
-        <Route path="/createfoundpost" element={<CreateFoundPost />} />
-        <Route path="/sendclue" element={<SendClue />} />
-        <Route path="/myposts" element={<MyPosts />} />
-        <Route path="/chat" element={<ChatPage />} />
+        <Route path="/createpost" element={<RequireAuth><CreatePost /></RequireAuth>} />
+        <Route path="/createfoundpost" element={<RequireAuth><CreateFoundPost /></RequireAuth>} />
+        <Route path="/sendclue" element={<RequireAuth><SendClue /></RequireAuth>} />
+        <Route path="/myposts" element={<RequireAuth><MyPosts /></RequireAuth>} />
+        <Route path="/chat" element={<RequireAuth><ChatPage /></RequireAuth>} />
 
       </Routes>
     </BrowserRouter>
